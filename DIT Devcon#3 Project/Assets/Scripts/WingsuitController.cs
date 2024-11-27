@@ -4,21 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
-
-[RequireComponent(typeof(CharacterController))]
-#if ENABLE_INPUT_SYSTEM
-[RequireComponent(typeof(PlayerInput))]
-#endif
-
 public class WingsuitController : MonoBehaviour
 {
 
-   
+
 
     public float speed = 22f;
     public float drag = 8f;
 
     public Rigidbody rb;
+    public Collider col;
     public ThirdPersonController tp;
     public GameObject kyleBody;
     private Vector3 rotation;
@@ -26,21 +21,35 @@ public class WingsuitController : MonoBehaviour
 
     public float percentage;
 
+    private Rigidbody[] ragdollRB;
+    private Collider[] ragdollCol;
+    private Animator animator;
+
+    private void Awake()
+    {
+        ragdollRB = GetComponentsInChildren<Rigidbody>();
+        ragdollCol = GetComponentsInChildren<Collider>();
+        animator = GetComponent<Animator>();
+
+        DisableRagdoll();
+    }
+
     private void Start()
     {
-       
+
+
         rb = GetComponent<Rigidbody>();
+        col = GetComponent<Collider>();
         rotation = transform.eulerAngles;
         tp = rb.GetComponent<ThirdPersonController>();
         isGliding = false;
-
     }
 
     private void Update()
     {
         //if (Input.GetKeyUp(KeyCode.Space) == true && isGliding == true)
         //{
-        //    //tp.enabled = true;
+
         //    Vector3 currentrotation = kyleBody.gameObject.transform.eulerAngles;
         //    currentrotation.x -= 85f;
         //    kyleBody.gameObject.transform.eulerAngles = currentrotation;
@@ -48,13 +57,15 @@ public class WingsuitController : MonoBehaviour
         //}
         if (Input.GetKeyUp(KeyCode.Space) == true && isGliding == false)
         {
+            animator.enabled = false;
+            EnableRagdoll();
             tp.enabled = false;
             Vector3 currentrotation = kyleBody.gameObject.transform.eulerAngles;
             currentrotation.x += 85f;
+            col.transform.eulerAngles = currentrotation;
+
             kyleBody.gameObject.transform.eulerAngles = currentrotation;
             isGliding = true;
-            
-            rb.useGravity = true;
         }
 
         if (isGliding == true)
@@ -62,18 +73,13 @@ public class WingsuitController : MonoBehaviour
 
             Gliding();
         }
-
-        else
-        {
-            Move();
-        }
     }
 
     private void Gliding()
     {
         //player rotation - X axis
         rotation.x += 20 * Input.GetAxis("Vertical") * Time.deltaTime;
-        rotation.x = Mathf.Clamp(rotation.x, -45, 45);
+        rotation.x = Mathf.Clamp(rotation.x, -45, 90);
         //player rotation - Y Axis
         rotation.y += 20 * Input.GetAxis("Horizontal") * Time.deltaTime;
 
@@ -84,22 +90,58 @@ public class WingsuitController : MonoBehaviour
         //Transform
         transform.rotation = Quaternion.Euler(rotation);
 
-        percentage = rotation.x / 45;
-        //Drag: Fast = 4, slow = 6 (i guess the float?)
-        float temp_drag = (percentage * -2) + 8;
-        //Speed: fast = 13.8, Slow (12.5)
-        float temp_speed = percentage * (22f - 19f) + 19f;
+
+        // This is a tossed together solution from a few sources, which ideally will make the player lose speed if going up and gain if going down. 
+        float pitchPercent = (rotation.x + 45f) / 135f;
+
+        float temp_speed = Mathf.Lerp(-5, 22, pitchPercent);
+        float temp_drag = Mathf.Lerp(9f, 7f, pitchPercent);
 
         rb.drag = temp_drag;
-        Vector3 localvelocity = transform.InverseTransformDirection(rb.velocity);
-        localvelocity.z = temp_speed;
-        localvelocity = localvelocity * (1 - Time.deltaTime * temp_drag);
-        rb.velocity = transform.TransformDirection(localvelocity);
+
+        Quaternion yawRotation = Quaternion.Euler(0, rotation.y, 0);
+        Vector3 movementDirection = yawRotation * Vector3.forward;
+
+        Vector3 force = movementDirection * temp_speed;
+        force *= (1 - Time.deltaTime * temp_drag);
+
+        rb.AddForce(force, ForceMode.Acceleration);
+
+
+
     }
 
-    private void Move()
+
+    private void EnableRagdoll()
     {
-     
-    }
-}
+        foreach (var rb in ragdollRB)
+        {
+            rb.isKinematic = false;
+            rb.useGravity = true;
+        }
 
+        foreach (var col in ragdollCol)
+        {
+            col.enabled = true;
+        }
+
+    }
+    private void DisableRagdoll()
+    {
+
+        foreach (var rb in ragdollRB)
+        {
+            rb.isKinematic = true;
+            rb.useGravity = false;
+        }
+
+        foreach (var col in ragdollCol)
+        {
+            if (col.gameObject != gameObject)
+            {
+                col.enabled = false;
+            }
+        }
+    }
+
+}
