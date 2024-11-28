@@ -16,87 +16,78 @@ public class WingsuitController : MonoBehaviour
 
     public Rigidbody rb;
     public Collider col;
-    public ThirdPersonController tp;
     public GameObject kyleBody;
     private Vector3 rotation;
     private bool isGliding;
+    private bool pressStart;
     public CinemachineVirtualCamera pinCam;
 
-    public Rigidbody hips;
-
     public float percentage;
+    public Vector3 currentRotation;
 
-    private Rigidbody[] ragdollRB;
-    private Collider[] ragdollCol;
-    private Animator animator;
+
 
     //Variables for Handle Reset of player
-
     public Vector3 playerStartPOS;
-    private void Awake()
-    {
-        ragdollRB = GetComponentsInChildren<Rigidbody>();
-        ragdollCol = GetComponentsInChildren<Collider>();
-        animator = GetComponent<Animator>();
-
-        DisableRagdoll();
-    }
 
     private void Start()
     {
 
-
         rb = GetComponent<Rigidbody>();
         col = GetComponent<Collider>();
+       rb.isKinematic = true;
         rotation = transform.eulerAngles;
-        tp = rb.GetComponent<ThirdPersonController>();
+      
         isGliding = false;
-        pinCam.m_Priority = 0;
+        
         playerStartPOS = transform.position;
+        currentRotation = kyleBody.gameObject.transform.eulerAngles;
     }
 
     private void Update()
     {
-        Vector3 currentrotation = kyleBody.gameObject.transform.eulerAngles;
-        //if (Input.GetKeyUp(KeyCode.Space) == true && isGliding == true)
-        //{
-
-        //    Vector3 currentrotation = kyleBody.gameObject.transform.eulerAngles;
-        //    currentrotation.x -= 85f;
-        //    kyleBody.gameObject.transform.eulerAngles = currentrotation;
-        //    isGliding = false;
-        //}
-        if (Input.GetKeyUp(KeyCode.Space) == true && isGliding == false)
+        if (Input.GetKey(KeyCode.Space) && pressStart == false)
         {
-            animator.enabled = false;
-            EnableRagdoll();
-            tp.enabled = false;
-            currentrotation.x += 85f;
-            col.gameObject.transform.eulerAngles = currentrotation;
-            kyleBody.gameObject.transform.eulerAngles = currentrotation;
-            isGliding = true;
+            pinCam.m_Priority = 0;
+            pressStart = true;
         }
 
-        if (isGliding == true)
+        if (pressStart == true)
         {
 
-            Gliding();
-            if (Input.GetKey(KeyCode.Q) == true)
+            
+            if (Input.GetKeyUp(KeyCode.Space) == true && isGliding == false)
             {
 
-                
-                
-                rb.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1 );
-                col.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1 );
-                kyleBody.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1);
+                rb.isKinematic = false;
+                rb.gameObject.transform.eulerAngles = currentRotation;
+                col.gameObject.transform.eulerAngles = currentRotation;
+                kyleBody.gameObject.transform.eulerAngles = currentRotation;
+                isGliding = true;
             }
-            if (Input.GetKey(KeyCode.E) == true)
+
+            if (isGliding == true)
             {
-                
-                rb.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1 );
-                col.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1);
-                kyleBody.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1);
+
+                Gliding();
+                if (Input.GetKey(KeyCode.Q) == true)
+                {
+
+
+
+                    rb.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1);
+                    col.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1);
+                    kyleBody.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1);
+                }
+                if (Input.GetKey(KeyCode.E) == true)
+                {
+
+                    rb.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1);
+                    col.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1);
+                    kyleBody.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1);
+                }
             }
+
         }
         PlayerReset();
         EndGame();
@@ -113,7 +104,7 @@ public class WingsuitController : MonoBehaviour
         rotation.y += 20 * Input.GetAxis("Horizontal") * Time.deltaTime;
         // Player rotation - Z axis
         rotation.z = -5 * Input.GetAxis("Horizontal");
-        rotation.z = Mathf.Clamp(rotation.z, -5, 5);
+        
         // Apply rotation
         transform.rotation = Quaternion.Euler(rotation);
 
@@ -136,72 +127,21 @@ public class WingsuitController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //foreach (var rb in ragdollRB)
-        //{
-        //    rb.isKinematic = false;
-        //    rb.useGravity = true;
-        //}
-        pinCam.m_Priority = 100;
-        //isGliding = false;
-    }
-
-        private void EnableRagdoll()
-    {
-
-
-        foreach (var rb in ragdollRB)
-        {
-            if (rb.gameObject.CompareTag("Kyle"))
-            {
-
-                rb.isKinematic = true;
-                rb.useGravity = false;
-
-            }
-            else
-            {
-                rb.isKinematic = false;
-                rb.useGravity = true;
-            }
-
-
-        }
-
         
-        //FixedJoint joint = hips.gameObject.AddComponent<FixedJoint>();
-        //joint.connectedBody = rb; // 'rb' is the parent object's Rigidbody
-
-        foreach (var col in ragdollCol)
-        {
-            col.enabled = true;
-        }
+        pinCam.m_Priority = 100;
+        
     }
-    private void DisableRagdoll()
-    {
 
-        foreach (var rb in ragdollRB)
-        {
-            rb.isKinematic = true;
-            rb.useGravity = false;
-        }
-
-        foreach (var col in ragdollCol)
-        {
-            if (col.gameObject != gameObject)
-            {
-                col.enabled = false;
-            }
-        }
-    }
+       
 
     private void PlayerReset()
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
 
-            tp.enabled = true;
+          
             isGliding = false;
-            DisableRagdoll();
+           
             transform.position = playerStartPOS;
 
             pinCam.m_Priority = 0;
