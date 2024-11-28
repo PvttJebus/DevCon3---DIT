@@ -24,11 +24,11 @@ public class PinScoring : MonoBehaviour
         {
             hasFallen = true;
             fallenPinCount++;
-            UpdateResultText();
+            UpdateScoreText();
         }
     }
 
-    void UpdateResultText()
+    void UpdateScoreText()
     {
         if (scoreText != null)
         {
