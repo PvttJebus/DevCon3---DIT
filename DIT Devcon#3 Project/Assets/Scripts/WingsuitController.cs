@@ -2,6 +2,7 @@ using Cinemachine;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
@@ -30,6 +31,7 @@ public class WingsuitController : MonoBehaviour
     private Animator animator;
 
     //Variables for Handle Reset of player
+
     public Vector3 playerStartPOS;
     private void Awake()
     {
@@ -96,7 +98,8 @@ public class WingsuitController : MonoBehaviour
                 kyleBody.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1);
             }
         }
-
+        PlayerReset();
+        EndGame();
 
     }
 
@@ -195,12 +198,22 @@ public class WingsuitController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
+
             tp.enabled = true;
             isGliding = false;
             DisableRagdoll();
             transform.position = playerStartPOS;
+
             pinCam.m_Priority = 0;
 
+        }
+    }
+
+    private void EndGame()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            Application.Quit();
         }
     }
 

@@ -20,7 +20,7 @@ public class PinScoring : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (!hasFallen && (collision.gameObject.CompareTag("Kyle") || collision.gameObject.CompareTag("Pin")))
+        if (!hasFallen && (collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("Pin")))
         {
             hasFallen = true;
             fallenPinCount++;
