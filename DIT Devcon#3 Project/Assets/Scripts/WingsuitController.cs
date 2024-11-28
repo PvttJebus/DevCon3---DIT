@@ -1,3 +1,4 @@
+using Cinemachine;
 using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,6 +19,9 @@ public class WingsuitController : MonoBehaviour
     public GameObject kyleBody;
     private Vector3 rotation;
     private bool isGliding;
+    public CinemachineVirtualCamera pinCam;
+
+    public Rigidbody hips;
 
     public float percentage;
 
@@ -43,10 +47,12 @@ public class WingsuitController : MonoBehaviour
         rotation = transform.eulerAngles;
         tp = rb.GetComponent<ThirdPersonController>();
         isGliding = false;
+        pinCam.m_Priority = 0;
     }
 
     private void Update()
     {
+        Vector3 currentrotation = kyleBody.gameObject.transform.eulerAngles;
         //if (Input.GetKeyUp(KeyCode.Space) == true && isGliding == true)
         //{
 
@@ -60,10 +66,8 @@ public class WingsuitController : MonoBehaviour
             animator.enabled = false;
             EnableRagdoll();
             tp.enabled = false;
-            Vector3 currentrotation = kyleBody.gameObject.transform.eulerAngles;
             currentrotation.x += 85f;
-            col.transform.eulerAngles = currentrotation;
-
+            col.gameObject.transform.eulerAngles = currentrotation;
             kyleBody.gameObject.transform.eulerAngles = currentrotation;
             isGliding = true;
         }
@@ -72,59 +76,99 @@ public class WingsuitController : MonoBehaviour
         {
 
             Gliding();
+            if (Input.GetKey(KeyCode.Q) == true)
+            {
+
+                
+                
+                rb.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1 );
+                col.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1 );
+                kyleBody.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1);
+            }
+            if (Input.GetKey(KeyCode.E) == true)
+            {
+                
+                rb.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 20 * Time.deltaTime);
+                col.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 20 * Time.deltaTime);
+                kyleBody.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 20 * Time.deltaTime);
+            }
         }
+
+
     }
 
     private void Gliding()
     {
-        //player rotation - X axis
+
+        // Player rotation - X axis
         rotation.x += 20 * Input.GetAxis("Vertical") * Time.deltaTime;
         rotation.x = Mathf.Clamp(rotation.x, -45, 90);
-        //player rotation - Y Axis
+        // Player rotation - Y axis
         rotation.y += 20 * Input.GetAxis("Horizontal") * Time.deltaTime;
-
-
-        //player rotation - Z axis
+        // Player rotation - Z axis
         rotation.z = -5 * Input.GetAxis("Horizontal");
         rotation.z = Mathf.Clamp(rotation.z, -5, 5);
-        //Transform
+        // Apply rotation
         transform.rotation = Quaternion.Euler(rotation);
 
-
-        // This is a tossed together solution from a few sources, which ideally will make the player lose speed if going up and gain if going down. 
+        // Correct the pitchPercent calculation
         float pitchPercent = (rotation.x + 45f) / 135f;
 
-        float temp_speed = Mathf.Lerp(-5, 22, pitchPercent);
+        // Reverse the arguments in Mathf.Lerp
+        float temp_speed = Mathf.Lerp(0f, 22f, pitchPercent);
         float temp_drag = Mathf.Lerp(9f, 7f, pitchPercent);
 
         rb.drag = temp_drag;
 
-        Quaternion yawRotation = Quaternion.Euler(0, rotation.y, 0);
-        Vector3 movementDirection = yawRotation * Vector3.forward;
-
-        Vector3 force = movementDirection * temp_speed;
-        force *= (1 - Time.deltaTime * temp_drag);
-
-        rb.AddForce(force, ForceMode.Acceleration);
-
-
+        Vector3 localvelocity = transform.InverseTransformDirection(rb.velocity);
+        localvelocity.z = temp_speed * 4;
+        localvelocity *= (1 - Time.deltaTime * temp_drag);
+        rb.velocity = transform.TransformDirection(localvelocity);
 
     }
 
 
-    private void EnableRagdoll()
+    private void OnTriggerEnter(Collider other)
     {
+        //foreach (var rb in ragdollRB)
+        //{
+        //    rb.isKinematic = false;
+        //    rb.useGravity = true;
+        //}
+        pinCam.m_Priority = 100;
+        //isGliding = false;
+    }
+
+        private void EnableRagdoll()
+    {
+
+
         foreach (var rb in ragdollRB)
         {
-            rb.isKinematic = false;
-            rb.useGravity = true;
+            if (rb.gameObject.CompareTag("Kyle"))
+            {
+
+                rb.isKinematic = true;
+                rb.useGravity = false;
+
+            }
+            else
+            {
+                rb.isKinematic = false;
+                rb.useGravity = true;
+            }
+
+
         }
+
+        
+        //FixedJoint joint = hips.gameObject.AddComponent<FixedJoint>();
+        //joint.connectedBody = rb; // 'rb' is the parent object's Rigidbody
 
         foreach (var col in ragdollCol)
         {
             col.enabled = true;
         }
-
     }
     private void DisableRagdoll()
     {
