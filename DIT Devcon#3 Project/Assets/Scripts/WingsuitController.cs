@@ -29,6 +29,8 @@ public class WingsuitController : MonoBehaviour
     private Collider[] ragdollCol;
     private Animator animator;
 
+    //Variables for Handle Reset of player
+    public Vector3 playerStartPOS;
     private void Awake()
     {
         ragdollRB = GetComponentsInChildren<Rigidbody>();
@@ -48,6 +50,7 @@ public class WingsuitController : MonoBehaviour
         tp = rb.GetComponent<ThirdPersonController>();
         isGliding = false;
         pinCam.m_Priority = 0;
+        playerStartPOS = transform.position;
     }
 
     private void Update()
@@ -88,9 +91,9 @@ public class WingsuitController : MonoBehaviour
             if (Input.GetKey(KeyCode.E) == true)
             {
                 
-                rb.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 20 * Time.deltaTime);
-                col.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 20 * Time.deltaTime);
-                kyleBody.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 20 * Time.deltaTime);
+                rb.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1 );
+                col.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1);
+                kyleBody.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1);
             }
         }
 
@@ -122,7 +125,7 @@ public class WingsuitController : MonoBehaviour
 
         Vector3 localvelocity = transform.InverseTransformDirection(rb.velocity);
         localvelocity.z = temp_speed * 4;
-        localvelocity *= (1 - Time.deltaTime * temp_drag);
+        localvelocity.z *= (1 - Time.deltaTime * temp_drag);
         rb.velocity = transform.TransformDirection(localvelocity);
 
     }
@@ -185,6 +188,19 @@ public class WingsuitController : MonoBehaviour
             {
                 col.enabled = false;
             }
+        }
+    }
+
+    private void PlayerReset()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            tp.enabled = true;
+            isGliding = false;
+            DisableRagdoll();
+            transform.position = playerStartPOS;
+            pinCam.m_Priority = 0;
+
         }
     }
 
