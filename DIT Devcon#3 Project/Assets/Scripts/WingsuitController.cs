@@ -70,27 +70,14 @@ public class WingsuitController : MonoBehaviour
             {
 
                 Gliding();
-                if (Input.GetKey(KeyCode.Q) == true)
-                {
-
-
-
-                    rb.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1);
-                    col.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1);
-                    kyleBody.gameObject.transform.RotateAround(rb.transform.position, Vector3.forward, 1);
-                }
-                if (Input.GetKey(KeyCode.E) == true)
-                {
-
-                    rb.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1);
-                    col.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1);
-                    kyleBody.gameObject.transform.RotateAround(rb.transform.position, Vector3.back, 1);
-                }
+                
             }
 
         }
         PlayerReset();
         EndGame();
+
+        //Debug.DrawLine(rb.transform.position, rb.transform.position + rb.transform.forward * 5f, Color.red);
 
     }
 
@@ -102,26 +89,39 @@ public class WingsuitController : MonoBehaviour
         rotation.x = Mathf.Clamp(rotation.x, -45, 90);
         // Player rotation - Y axis
         rotation.y += 20 * Input.GetAxis("Horizontal") * Time.deltaTime;
-        // Player rotation - Z axis
-        rotation.z = -5 * Input.GetAxis("Horizontal");
         
-        // Apply rotation
-        transform.rotation = Quaternion.Euler(rotation);
+        
 
-        // Correct the pitchPercent calculation
+        if (Input.GetKey(KeyCode.Q) == true)
+        {
+
+            rotation.z -= 60f * Time.deltaTime;
+        }
+        if (Input.GetKey(KeyCode.E) == true)
+        {
+
+            rotation.z += 60f * Time.deltaTime;
+        }
+        transform.rotation = Quaternion.Euler(rotation);
+        // this determines what the current X rotation pitch is
         float pitchPercent = (rotation.x + 45f) / 135f;
 
-        // Reverse the arguments in Mathf.Lerp
-        float temp_speed = Mathf.Lerp(0f, 22f, pitchPercent);
-        float temp_drag = Mathf.Lerp(9f, 7f, pitchPercent);
+        //  These determine speed and drag based on the difference between pitch percentage
+        float temp_speed = Mathf.Lerp(-5, 22f, pitchPercent);
+        float temp_drag = Mathf.Lerp(12f, 7f, pitchPercent);
 
         rb.drag = temp_drag;
 
         Vector3 localvelocity = transform.InverseTransformDirection(rb.velocity);
-        localvelocity.z = temp_speed * 4;
+        localvelocity.z = temp_speed * 5;
         localvelocity.z *= (1 - Time.deltaTime * temp_drag);
         rb.velocity = transform.TransformDirection(localvelocity);
 
+       
+
+
+        //Debug.Log(temp_speed);
+        Debug.Log(pitchPercent);
     }
 
 
