@@ -25,7 +25,15 @@ public class WingsuitController : MonoBehaviour
     public float percentage;
     public Vector3 currentRotation;
 
-
+    //bools for player inputs in fixed update
+    private float verticalInput;
+    private float horizontalInput;
+    private bool qKey;
+    private bool eKey;
+    private bool spaceKey;
+    private bool spaceKeyUp;
+    private bool rKeyDown;
+    private bool escapeKey;
 
     //Variables for Handle Reset of player
     public Vector3 playerStartPOS;
@@ -46,34 +54,34 @@ public class WingsuitController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.Space) && pressStart == false)
+        verticalInput = Input.GetAxis("Vertical");
+        horizontalInput = Input.GetAxis("Horizontal");
+        qKey = Input.GetKey(KeyCode.Q);
+        eKey = Input.GetKey(KeyCode.E);
+        spaceKey = Input.GetKey(KeyCode.Space);
+        spaceKeyUp = Input.GetKeyUp(KeyCode.Space);
+        rKeyDown = Input.GetKeyDown(KeyCode.R);
+        escapeKey = Input.GetKey(KeyCode.Escape);
+
+        if (spaceKey && pressStart == false)
         {
             pinCam.m_Priority = 0;
             pressStart = true;
         }
 
-        if (pressStart == true)
+        if (pressStart)
         {
-
-            
-            if (Input.GetKeyUp(KeyCode.Space) == true && isGliding == false)
+            if (spaceKeyUp && isGliding == false)
             {
-
                 rb.isKinematic = false;
-                rb.gameObject.transform.eulerAngles = currentRotation;
-                col.gameObject.transform.eulerAngles = currentRotation;
-                kyleBody.gameObject.transform.eulerAngles = currentRotation;
+                rb.transform.eulerAngles = currentRotation;
+                col.transform.eulerAngles = currentRotation;
+                kyleBody.transform.eulerAngles = currentRotation;
                 isGliding = true;
             }
+        
 
-            if (isGliding == true)
-            {
-
-                Gliding();
-                
-            }
-
-        }
+    }
         PlayerReset();
         EndGame();
 
@@ -81,27 +89,34 @@ public class WingsuitController : MonoBehaviour
 
     }
 
+    private void FixedUpdate()
+    {
+        if (isGliding == true)
+        {
+            Gliding();
+        }
+    }
+
     private void Gliding()
     {
 
         // Player rotation - X axis
-        rotation.x += 20 * Input.GetAxis("Vertical") * Time.deltaTime;
+        rotation.x += 20f * verticalInput * Time.fixedDeltaTime;
         rotation.x = Mathf.Clamp(rotation.x, -45, 90);
         // Player rotation - Y axis
-        rotation.y += 20 * Input.GetAxis("Horizontal") * Time.deltaTime;
-        
-        
+        rotation.y += 20f * horizontalInput * Time.fixedDeltaTime;
 
-        if (Input.GetKey(KeyCode.Q) == true)
+
+
+        if (qKey)
         {
-
-            rotation.z -= 60f * Time.deltaTime;
+            rotation.z -= 60f * Time.fixedDeltaTime;
         }
-        if (Input.GetKey(KeyCode.E) == true)
+        if (eKey)
         {
-
-            rotation.z += 60f * Time.deltaTime;
+            rotation.z += 60f * Time.fixedDeltaTime;
         }
+
         transform.rotation = Quaternion.Euler(rotation);
         // this determines what the current X rotation pitch is
         float pitchPercent = (rotation.x + 45f) / 135f;
@@ -113,11 +128,11 @@ public class WingsuitController : MonoBehaviour
         rb.drag = temp_drag;
 
         Vector3 localvelocity = transform.InverseTransformDirection(rb.velocity);
-        localvelocity.z = temp_speed * 5;
-        localvelocity.z *= (1 - Time.deltaTime * temp_drag);
+        localvelocity.z = temp_speed * 5f;
+        localvelocity.z *= (1f - Time.fixedDeltaTime * temp_drag);
         rb.velocity = transform.TransformDirection(localvelocity);
 
-       
+
 
 
         //Debug.Log(temp_speed);
