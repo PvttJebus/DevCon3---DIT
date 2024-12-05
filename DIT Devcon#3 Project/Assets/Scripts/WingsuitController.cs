@@ -107,7 +107,7 @@ public class WingsuitController : MonoBehaviour
         float pitchPercent = (rotation.x + 45f) / 135f;
 
         //  These determine speed and drag based on the difference between pitch percentage
-        float temp_speed = Mathf.Lerp(-5, 22f, pitchPercent);
+        float temp_speed = Mathf.Lerp(0, 22f, pitchPercent);
         float temp_drag = Mathf.Lerp(12f, 7f, pitchPercent);
 
         rb.drag = temp_drag;
