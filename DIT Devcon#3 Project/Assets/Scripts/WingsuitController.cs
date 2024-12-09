@@ -3,9 +3,11 @@ using StarterAssets;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XR;
+using UnityEngine.Rendering;
 public class WingsuitController : MonoBehaviour
 {
 
@@ -21,7 +23,7 @@ public class WingsuitController : MonoBehaviour
     private bool isGliding;
     private bool pressStart;
     public CinemachineVirtualCamera pinCam;
-
+    
     public float percentage;
     public Vector3 currentRotation;
 
@@ -79,9 +81,10 @@ public class WingsuitController : MonoBehaviour
                 kyleBody.transform.eulerAngles = currentRotation;
                 isGliding = true;
             }
-        
 
-    }
+
+           
+        }
         PlayerReset();
         EndGame();
 
@@ -94,6 +97,7 @@ public class WingsuitController : MonoBehaviour
         if (isGliding == true)
         {
             Gliding();
+
         }
     }
 
@@ -107,6 +111,8 @@ public class WingsuitController : MonoBehaviour
         rotation.y += 20f * horizontalInput * Time.fixedDeltaTime;
 
 
+        
+
 
         if (qKey)
         {
@@ -117,26 +123,43 @@ public class WingsuitController : MonoBehaviour
             rotation.z += 60f * Time.fixedDeltaTime;
         }
 
+        // this determines the angle of the player against the y axis
+        float facingSimilarity = Vector3.Dot(Vector3.down, rb.transform.forward);
         transform.rotation = Quaternion.Euler(rotation);
         // this determines what the current X rotation pitch is
         float pitchPercent = (rotation.x + 45f) / 135f;
-
         //  These determine speed and drag based on the difference between pitch percentage
         float temp_speed = Mathf.Lerp(0, 22f, pitchPercent);
         float temp_drag = Mathf.Lerp(12f, 7f, pitchPercent);
-
+       
         rb.drag = temp_drag;
+        
+
+
 
         Vector3 localvelocity = transform.InverseTransformDirection(rb.velocity);
         localvelocity.z = temp_speed * 5f;
         localvelocity.z *= (1f - Time.fixedDeltaTime * temp_drag);
         rb.velocity = transform.TransformDirection(localvelocity);
 
+        //this uses the dot vector return to slow speed and create new gravity to simulate stopping flight
+        if (facingSimilarity <= -0.1f)
+        {
+            //rb.useGravity = false;
+            localvelocity.z *= (1f - Time.fixedDeltaTime * temp_drag) - 11f;
+            //rb.AddForce(new Vector3(0, -20, 0));
+            //rb.AddForce(Physics.gravity * 5f);
+            Physics.gravity = new Vector3(0, -90.0f, 0);
+        }
+       else
+        {
+            rb.useGravity = true;
 
-
+        }
 
         //Debug.Log(temp_speed);
-        Debug.Log(pitchPercent);
+        //Debug.Log(pitchPercent);
+        //Debug.Log(facingSimilarity);
     }
 
 
