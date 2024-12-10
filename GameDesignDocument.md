@@ -1,1 +1,178 @@
-## Wingsuit Bowling - Game Design Document
+# Wingsuit Bowling - Game Design Document
+
+
+## Team Members
+Our team consisted of: 
+
+**Dave Coventry**
+- Physics math
+- Code review/QA
+- GDD
+
+**Ignacio Cajiao**
+- Pin/Score/UI coding
+- Visuals
+- GDD
+
+**Trevor (TJ) Beckham**
+- Wingsuit coding
+- Project management
+- GDD
+
+## Game Overview
+Inspired by the classic Flatout racing games, Wingsuit Bowling! looks to bring the fun of bowling with the chaos of using a wingsuit for a crazy good time. 
+
+Players will be tasked with knocking down as many bowling pins as possible with only two shots, but instead of using bowling balls, they will have to harness the laws of physics to glide themselves into the pins. 
+
+It’s not just falling with style, players will have to be mindful of their pitch, yaw, and speed to ensure they can not only get to the pins, but get the best hits possible. 
+
+
+## Controls
+The controls for Wingsuit Bowling! Are: 
+
+- Start Gliding - Space
+- Gain Speed/Aim Down - W
+- Lose Speed/ Aim Up - S
+- Turn Character Left - A
+- Turn Character Right - D 
+- Rotate Character Left - Q
+- Rotate Character Right - E
+- Reset Character Position - R
+- Exit Game - ESC
+
+
+## Metric Research and References
+Player Weight in kgs - 90.7kgs - reduce value by one decimal for ease of use (9.07) **May strike this for ease and use 1 for mass** 
+Drag Coefficients - for slow 7, for fast 9 - 8 for base
+Max speed 220km/h - reduce by one decimal place for ease (22f)
+Base speed 190km/h - reduce by one decimal place for ease (19f)
+
+velocity = velocity * ( 1 - deltaTime * temp_drag);
+
+
+
+## Gameplay Mechanics
+
+### Physics
+dfd
+
+### Wingsuit Gliding
+
+The wingsuit is the one thing the players get a chance to control, but even then it’s at the whim of world physics. Players will have to manipulate the wingsuit and use physics to their advantage to reach the bowling pins and get the highest score possible. 
+
+Players will need to consider the following:
+
+- Wingsuit angle (pitch)
+  - The angle of the wingsuit will determine if the player is gaining speed & losing altitude (angled down) or if they are maintaining/gaining little altitude while losing speed (angled up)
+- Speed
+  - Not only will having a higher speed help get players to the bowling pins faster, but it can help knock more pins down due to the speed the pins are hit. 
+- Position
+  - Finally, when hitting the pins, the position of the player matters, what angle are the pins being hit, what rotation does the player have, which pins are being hit. The right mix of positioning can be the difference from a strike and a split. 
+
+### Bowling Pins
+Dfd
+
+### Score
+dfd
+
+## Objective Statement
+Words words words words
+
+## Design Rationale
+When it comes down to the key aspects of our game, we had set out with some initial concepts that both worked as planned and were far from the optimal solution. Let’s look at the four key areas of our game design and how they came to be. 
+
+### Physics
+dfd
+
+### Wingsuit Gliding
+Wanted them to gain speed going down, aiming up they’d start to gradually lose speed to the point of stalling and falling
+Issues with speed loss and angles, to the point the player could aim level and still move forward/climb altitude 
+Reworked a bunch of times, after getting assistance from Raph leveraged dot.products… REWORD THIS ONCE FINISHED
+
+### Bowling Pins
+
+Initially we had figured the bowling pins were going to be pretty straight forward given we were able to find a lot of resources around dimensions, weight, centre of mass, etc. We quickly learned that ease of access to information does not mean it’ll be easy to replicate in Unity. 
+
+When we set the pins up to be as close as possible to real bowling pins, including the centre of mass, it resulted in the pins being very “floaty” as if they were less affected by gravity. While we spent time tinkering trying to get it to feel more natural with the real centre of mass, we were having an impasse. 
+
+So the team made the executive decision to lean into the Cade part of Simcade in this instance. We revert the centre of mass to the original position in Unity, while retaining all other real-world metrics (i.e. mass) the pins felt a lot more natural and satisfying to hit. 
+
+### Score
+
+For the scoring, we opted for a simple system similar to traditional bowling. Given the game’s short duration, we implemented a single frame structure where players have two chances to knock down as many pins as possible. After each frame, the game resets allowing the players to try again.
+
+We Initially intended for the score to increase when the bowling pins fell over by using the Y-axis value, which would change when the pins fell to count the score. However, we had issues with the bowling pins axes showing weird values. To simplify, we made it so that when the player or pin comes in contact with another pin, it counts as a point. This approach worked well and seems to be reliable. 
+
+## Playtesting
+
+### Playtest Questions
+
+**1. Let’s start with your feedback. Tell us about your experience with this prototype.**
+
+- It looks cool. But it’s kind of hard to control at first. Getting the hang of it. Feels slow maybe?
+- Movement feels a bit strange. If the body was normal it would be better. 
+- Maybe use A and D instead of Q and E
+- Another comment on removing the ragdoll effect.
+- Mechanics are fun, like the idea of being the bowling ball. 
+
+In summary, the feedback was very positive - the majority of testers enjoyed the gliding mechanic and having to use your character as the “bowling ball” for this simcade game. The feedback about the character model was quickly corrected by our team to meet the 
+
+
+**2. What about this works toward simulating the feeling of gliding?**
+
+- The way you can point down and stuff, and all the controls feel like gliding.
+- Speed feels realistic, gravity isn’t pulling down too much so there’s time to prepare the approach to pins.
+- Gravity is good.
+
+In summary, the simulation seems to mirror the feeling of gliding in this early iteration, but it was not as realistic as we would like it to be as a team. We continued to improve on the simulation by adding and changing variables to achieve an even more realistic gliding simulation that would include stopping and falling when no velocity is present. 
+
+**3. What could be changed or improved to make the feeling more real?
+**
+- Faster falling pins. It feels sort of slow - could add a glider on the character. Change the model to look more like gliding. 
+- Adding a glider will make it feel like he’s gliding more.
+- Wind effects maybe.
+- Add Menu/Start Screen
+- Maybe a number to show distance/altitude
+- Things in the background to make it feel like you’re moving. 
+
+Though a lot of the feedback here is cosmetic in nature, there were a few points raised that we took into consideration for our final design. The distance trackers were a consideration for some time but a little outside of our original design intention. The mention of objects or textures to help dictate the distance traveled and the speed the player is moving were fantastic suggestions that we incorporated into our final design.
+
+**4. What does the speed feel like when you are looking down and then back up?**
+
+- Feels like down is still a bit slow. Pointing up looks good.
+- Make the speed going down a bit faster. 
+- Harder to pull up out of a dive.
+
+This question was added during our first playtest interview as it was prompted by the thought of a playtester, as well as the design intention of our team. Points were raised here that conflicted with earlier feedback and we felt it was necessary to look at the initial question a bit different. This gave us the feedback that was valuable for our final design as it aligned with things we would like to know based on our design intentions.
+
+**5. In what ways could the track itself be changed or improved to create a better playing experience?**
+
+- Maybe it could be thicker, because most of the screen is green. The line is a little thin and the pins are far away. Adding a start screen and reset would be good to add.
+- More background objects to feel more like movement. 
+- Lines or shapes on the track to show that you’re getting closer.
+
+Finally, this question yielded more cosmetic feedback but got the team thinking more about how the look of the scene could change the feel of the gameplay. Overall, we decided to include some of these suggestions into our final design to increase the appeal and impact of the game’s physics system and mechanics of gliding.
+
+## Resources
+Below is the list of resources leveraged for this project, including but not limited too videos, tutorials, forms, and manuels.
+
+### Unity Manuel
+  - [Rigidbody component reference](https://docs.unity3d.com/Manual/class-Rigidbody.html)
+  - [Freeze rigidbody position in script](https://discussions.unity.com/t/freeze-rigidbody-position-in-script/110627/5)
+
+### Unity forums
+  - [What unit is Rigidbody Mass based on?](https://discussions.unity.com/t/ignore-collisions-by-tag-solved/423057](https://discussions.unity.com/t/what-unit-is-rigidbody-mass-based-on/30267)
+  - [Freeze rigidbody position in script](https://discussions.unity.com/t/freeze-rigidbody-position-in-script/110627/5)
+ 
+### Research
+- [Bowling Pins - Wikipedia](https://en.wikipedia.org/wiki/Bowling_pin#Tenpins)
+- [Bowling Pin Size](https://www.google.com/search?q=bowling+pin+size&oq=bowling+pin+size&gs_lcrp=EgRlZGdlKg4IABBFGBQYORiHAhiABDIOCAAQRRgUGDkYhwIYgAQyBwgBEAAYgAQyDAgCEAAYFBiHAhiABDIICAMQABgWGB4yCAgEEAAYFhgeMggIBRAAGBYYHjIICAYQABgWGB4yCAgHEAAYFhge0gEIMzIzMGowajGoAgCwAgA&sourceid=chrome&ie=UTF-8)
+- [Converting Metrics to Unity](https://www.google.com/search?q=converting+real+measurements+ot+unity&oq=converting+real+measurements+ot+unity&gs_lcrp=EgRlZGdlKgYIABBFGDkyBggAEEUYOTIHCAEQIRifBTIHCAIQIRifBTIHCAMQIRifBTIHCAQQIRifBdIBCDQwMzBqMGoxqAIAsAIA&sourceid=chrome&ie=UTF-8)
+
+### Assets
+- [Wingsuit Model](https://www.google.com/search?q=bowling+pin+size&oq=bowling+pin+size&gs_lcrp=EgRlZGdlKg4IABBFGBQYORiHAhiABDIOCAAQRRgUGDkYhwIYgAQyBwgBEAAYgAQyDAgCEAAYFBiHAhiABDIICAMQABgWGB4yCAgEEAAYFhgeMggIBRAAGBYYHjIICAYQABgWGB4yCAgHEAAYFhge0gEIMzIzMGowajGoAgCwAgA&sourceid=chrome&ie=UTF-8)
+- [Robot Kyle Model](https://assetstore.unity.com/packages/3d/characters/robots/robot-kyle-urp-4696?srsltid=AfmBOoo6UkSoeHaAkO0k3Nbr45KDaRm8j2hC6ROCRxGZj0SE4djJ2BSL)
+- [Bowling Alley Return Models](https://sketchfab.com/3d-models/tekken-bowling-alley-c80ccd1903ff412389addc76b265ea97)
+
+### Tutorials
+- [Making The Wingsuit - Far Cry 5 (Inspired by Games) | Unity](https://sketchfab.com/3d-models/tekken-bowling-alley-c80ccd1903ff412389addc76b265ea97)
