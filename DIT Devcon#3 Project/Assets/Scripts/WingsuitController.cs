@@ -39,6 +39,7 @@ public class WingsuitController : MonoBehaviour
 
     //Variables for Handle Reset of player
     public Vector3 playerStartPOS;
+    public Quaternion playerStartROT;
 
     private void Start()
     {
@@ -51,6 +52,7 @@ public class WingsuitController : MonoBehaviour
         isGliding = false;
         
         playerStartPOS = transform.position;
+        playerStartROT = transform.rotation;
         currentRotation = kyleBody.gameObject.transform.eulerAngles;
     }
 
@@ -181,6 +183,7 @@ public class WingsuitController : MonoBehaviour
             isGliding = false;
            
             transform.position = playerStartPOS;
+            transform.rotation = playerStartROT;
 
             pinCam.m_Priority = 0;
 
