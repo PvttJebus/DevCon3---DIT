@@ -53,9 +53,6 @@ velocity = velocity * ( 1 - deltaTime * temp_drag);
 
 ## Gameplay Mechanics
 
-### Physics
-dfd
-
 ### Wingsuit Gliding
 
 The wingsuit is the one thing the players get a chance to control, but even then it’s at the whim of world physics. Players will have to manipulate the wingsuit and use physics to their advantage to reach the bowling pins and get the highest score possible. 
