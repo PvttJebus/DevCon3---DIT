@@ -165,6 +165,9 @@ Below is the list of resources leveraged for this project, including but not lim
 ### Unity forums
   - [What unit is Rigidbody Mass based on?](https://discussions.unity.com/t/ignore-collisions-by-tag-solved/423057](https://discussions.unity.com/t/what-unit-is-rigidbody-mass-based-on/30267)
   - [Freeze rigidbody position in script](https://discussions.unity.com/t/freeze-rigidbody-position-in-script/110627/5)
+  - [Different prefabs having same scale have different size](https://discussions.unity.com/t/different-prefabs-having-same-scale-have-different-size/217039)
+  - [Same scale, but different apparent size?](https://discussions.unity.com/t/same-scale-but-different-apparent-size/585862/3)
+  - [How do I change the Unit size for a project?](https://discussions.unity.com/t/how-do-i-change-the-unit-size-for-a-project/31958)
  
 ### Research
 - [Bowling Pins - Wikipedia](https://en.wikipedia.org/wiki/Bowling_pin#Tenpins)
