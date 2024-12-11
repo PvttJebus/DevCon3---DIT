@@ -70,10 +70,8 @@ Players will need to consider the following:
   - Finally, when hitting the pins, the position of the player matters, what angle are the pins being hit, what rotation does the player have, which pins are being hit. The right mix of positioning can be the difference from a strike and a split. 
 
 ### Bowling Pins
-Dfd
 
-### Score
-dfd
+The bowling pins are set up in a traditional 10 pin formation, where hitting them in specific places increases the chances of knocking more down. The formation includes the head pin at the front. Followed by rows of pins forming a triangle. Hitting the head pin slightly off center can cause a domino effect. Knowing where to hit the pins and being accurate is crucial to knocking the pins down optimally and getting a high score.
 
 ## Objective Statement
 Words words words words
