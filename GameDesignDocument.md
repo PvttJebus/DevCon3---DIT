@@ -81,13 +81,17 @@ Words words words words
 ## Design Rationale
 When it comes down to the key aspects of our game, we had set out with some initial concepts that both worked as planned and were far from the optimal solution. Let’s look at the four key areas of our game design and how they came to be. 
 
-### Physics
-dfd
+### Wingsuit Gliding & Physics
 
-### Wingsuit Gliding
-Wanted them to gain speed going down, aiming up they’d start to gradually lose speed to the point of stalling and falling
-Issues with speed loss and angles, to the point the player could aim level and still move forward/climb altitude 
-Reworked a bunch of times, after getting assistance from Raph leveraged dot.products… REWORD THIS ONCE FINISHED
+The end goal for the wingsuit gliding was to have the player feel like they were gliding in the real world. So we knew we needed to leverage real world mass, gravity, etc. The biggest thing we were trying to do was have it so when the player aimed down, they would gain speed and lose altitude, and as they angled upward, they would gradually lose speed but maintain/slightly gain altitude, until the point they lost all of their speed and started to fall to the ground. 
+
+While we got the initial build working, and had very little issue with having the player gain speed when aiming down, we ran into multiple problems as we tried to get the gradual loss of speed to work, including:
+- The player would lose speed to a point and instead of stalling and falling, they would just hover in place
+- The player would angle up and start to lose speed, but then start gaining speed in the opposite direction, resulting in them going backward. 
+- The player would be angled upward but still have a small amount of speed, resulting in them flying more than gliding. 
+
+After weeks of trial and error, the team finally found a solution that would make the game feel more like what was intended, dot products. We leveraged dot products to determine the angle the player was facing and had it dictate the speed gain/loss over time. While this solution still has its issues and doesn’t match the real-world, it was a major step above the previous iteration and helped the gliding feel a bit more real and fun. 
+
 
 ### Bowling Pins
 
