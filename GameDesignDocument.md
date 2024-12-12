@@ -42,13 +42,12 @@ The controls for Wingsuit Bowling! Are:
 
 
 ## Metric Research and References
-Player Weight in kgs - 90.7kgs - reduce value by one decimal for ease of use (9.07) **May strike this for ease and use 1 for mass** 
-Drag Coefficients - for slow 7, for fast 9 - 8 for base
-Max speed 220km/h - reduce by one decimal place for ease (22f)
-Base speed 190km/h - reduce by one decimal place for ease (19f)
 
-velocity = velocity * ( 1 - deltaTime * temp_drag);
+For this prototype, simulating real world physics required some research into real world dynamics. For our wingsuit, we took into account the average weight of an adult man to create the mass of the object that would be our player character - roughly 90.7kgs. The rate of descent was determined through finding the fastest recorded wingsuit flight speed - 220km/h - the rate of freefalling speed - 120 km/h - and the average of the slower cruising speed of a wingsuit - 190km/h. These factors were reduced by one decimal point to make our numbers manageable and more easily balanced while still simulating the same feeling in the Unity engine. 
 
+When it came to creating a “real feeling” of gliding in our prototype, we chose to use a dot vector read of the player’s angle of ascent and descent and used code that would read vector time along with a gradual increase or decrease of speed respectively. When we were working on realism, we found an issue with the way the  wingsuit would behave as it ascended. Rather than slow the forward velocity and begin to fall faster toward the ground, our player would simply be stuck in the sky until they oriented themselves back down again in a descent toward the ground. The dot vector allowed for us to create stronger gravity when ascending to simulate the feeling of falling due to loss of speed.
+
+This small change made the rest of our gliding physics feel more realistic and was a large part of our initial goal with this prototype.
 
 
 ## Gameplay Mechanics
@@ -71,7 +70,11 @@ Players will need to consider the following:
 The bowling pins are set up in a traditional 10 pin formation, where hitting them in specific places increases the chances of knocking more down. The formation includes the head pin at the front. Followed by rows of pins forming a triangle. Hitting the head pin slightly off center can cause a domino effect. Knowing where to hit the pins and being accurate is crucial to knocking the pins down optimally and getting a high score.
 
 ## Objective Statement
-Words words words words
+
+Prototype a wingsuit mechanic where players have to manage body position to leverage physics and glide down to hit bowling pins. 
+
+The goal is to test how we would design a wingsuit mechanic and implement physics to replicate a real-world wingsuit experience. 
+
 
 ## Design Rationale
 When it comes down to the key aspects of our game, we had set out with some initial concepts that both worked as planned and were far from the optimal solution. Let’s look at the four key areas of our game design and how they came to be. 
