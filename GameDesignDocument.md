@@ -163,7 +163,7 @@ Below is the list of resources leveraged for this project, including but not lim
   - [Freeze rigidbody position in script](https://discussions.unity.com/t/freeze-rigidbody-position-in-script/110627/5)
 
 ### Unity forums
-  - [What unit is Rigidbody Mass based on?](https://discussions.unity.com/t/ignore-collisions-by-tag-solved/423057](https://discussions.unity.com/t/what-unit-is-rigidbody-mass-based-on/30267)
+  - [What unit is Rigidbody Mass based on?](https://discussions.unity.com/t/what-unit-is-rigidbody-mass-based-on/30267)
   - [Freeze rigidbody position in script](https://discussions.unity.com/t/freeze-rigidbody-position-in-script/110627/5)
   - [Different prefabs having same scale have different size](https://discussions.unity.com/t/different-prefabs-having-same-scale-have-different-size/217039)
   - [Same scale, but different apparent size?](https://discussions.unity.com/t/same-scale-but-different-apparent-size/585862/3)
